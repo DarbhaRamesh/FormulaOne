@@ -56,8 +56,4 @@ races_final_df = races_rename_df.withColumn('ingested_date', current_date())
 
 # COMMAND ----------
 
-races_final_df.write.parquet('/mnt/formulaone32/processed/races')
-
-# COMMAND ----------
-
-
+races_final_df.write.mode('overwrite').parquet('/mnt/formulaone32/processed/races')
