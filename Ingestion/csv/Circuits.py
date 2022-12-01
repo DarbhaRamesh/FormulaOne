@@ -69,3 +69,11 @@ circuits_final_df = add_metadata(circuits_selected_df)
 # COMMAND ----------
 
 circuits_final_df.write.mode('overwrite').parquet('{processed_path}/circuits')
+
+# COMMAND ----------
+
+display(spark.read.parquet(f'{processed_path}/circuits'))
+
+# COMMAND ----------
+
+dbutils.notebook.exit("Success")

@@ -63,3 +63,7 @@ results_final_df=add_metadata(results_dropped_df)
 # COMMAND ----------
 
 results_final_df.write.mode('overwrite').partitionBy('race_id').parquet('{processed_path}/results')
+
+# COMMAND ----------
+
+dbutils.notebook.exit("Success")

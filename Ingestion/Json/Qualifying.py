@@ -37,3 +37,7 @@ qualifying_final_df =  add_metadata(qualifying_renamed_df)
 # COMMAND ----------
 
 qualifying_final_df.write.mode('overwrite').parquet('{processed_path}/qualifying')
+
+# COMMAND ----------
+
+dbutils.notebook.exit("Success")

@@ -52,3 +52,7 @@ drivers_final_df = add_metadata(drivers_renamed_df)
 # COMMAND ----------
 
 drivers_final_df.write.mode('overwrite').parquet(f'{processed_path}/drivers')
+
+# COMMAND ----------
+
+dbutils.notebook.exit("Success")

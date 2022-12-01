@@ -39,3 +39,7 @@ lap_times_final_df = add_metadata(lap_times_renamed_df)
 # COMMAND ----------
 
 lap_times_final_df.write.mode('overwrite').parquet(f'{processed_path}/lap_times')
+
+# COMMAND ----------
+
+dbutils.notebook.exit("Success")

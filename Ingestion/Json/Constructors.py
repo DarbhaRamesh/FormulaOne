@@ -40,3 +40,7 @@ constructors_final_df = add_metadata(constructors_rename_df)
 # COMMAND ----------
 
 constructors_final_df.write.mode('overwrite').parquet('{processed_path}/constructors')
+
+# COMMAND ----------
+
+dbutils.notebook.exit("Success")

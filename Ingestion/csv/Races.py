@@ -57,3 +57,7 @@ races_final_df = add_metadata(races_rename_df)
 # COMMAND ----------
 
 races_final_df.write.mode('overwrite').parquet(f'{processed_path}/races')
+
+# COMMAND ----------
+
+dbutils.notebook.exit("Success")

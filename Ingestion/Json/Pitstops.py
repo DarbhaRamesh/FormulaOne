@@ -41,3 +41,7 @@ pitstops_final_df = add_metadata(pitstops_renamed_df)
 # COMMAND ----------
 
 pitstops_final_df.write.mode('overwrite').parquet('{processed_path}/pit_stops')
+
+# COMMAND ----------
+
+dbutils.notebook.exit("Success")
