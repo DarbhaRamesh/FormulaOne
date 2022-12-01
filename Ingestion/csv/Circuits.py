@@ -6,6 +6,10 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../configs/config"
+
+# COMMAND ----------
+
 from  pyspark.sql.types import StructType, StructField, IntegerType, StringType, DoubleType
 
 # COMMAND ----------
@@ -24,7 +28,7 @@ circuits_schema=StructType([
 
 # COMMAND ----------
 
-circuits_df = spark.read.option('header',True).schema(circuits_schema).csv('dbfs:/mnt/formulaone32/raw/circuits.csv')
+circuits_df = spark.read.option('header',True).schema(circuits_schema).csv(f'{raw_path}/circuits.csv')
 
 # COMMAND ----------
 
@@ -48,7 +52,6 @@ circuits_renamed_df = circuits_selected_df.withColumnRenamed('circuitRef','circu
 .withColumnRenamed('lng','longitude')\
 .withColumnRenamed('alt','altitude')
 
-
 # COMMAND ----------
 
 # MAGIC %md
@@ -56,12 +59,7 @@ circuits_renamed_df = circuits_selected_df.withColumnRenamed('circuitRef','circu
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_date,lit
-
-# COMMAND ----------
-
-circuits_final_df = circuits_selected_df.withColumn('ingested_date', current_date())
-# .withColumn('is_course', lit(True))
+circuits_final_df = add_metadata(circuits_selected_df)
 
 # COMMAND ----------
 
@@ -70,4 +68,4 @@ circuits_final_df = circuits_selected_df.withColumn('ingested_date', current_dat
 
 # COMMAND ----------
 
-circuits_final_df.write.mode('overwrite').parquet('/mnt/formulaone32/processed/circuits')
+circuits_final_df.write.mode('overwrite').parquet('{processed_path}/circuits')

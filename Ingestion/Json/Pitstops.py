@@ -7,6 +7,10 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../configs/config"
+
+# COMMAND ----------
+
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType
 
 # COMMAND ----------
@@ -23,22 +27,17 @@ pitstops_schema = StructType([
 
 # COMMAND ----------
 
-pitstops_df = spark.read.schema(pitstops_schema).option('multiline', True).json('/mnt/formulaone32/raw/pit_stops.json')
+pitstops_df = spark.read.schema(pitstops_schema).option('multiline', True).json(f'{raw_path}/pit_stops.json')
 
 # COMMAND ----------
 
-display(pitstops_df)
+pitstops_renamed_df = pitstops_df.withColumnRenamed('raceId', 'race_id')\
+.withColumnRenamed('driverId', 'driver_id')
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_date
+pitstops_final_df = add_metadata(pitstops_renamed_df)
 
 # COMMAND ----------
 
-pitstops_final_df = pitstops_df.withColumnRenamed('raceId', 'race_id')\
-.withColumnRenamed('driverId', 'driver_id')\
-.withColumn('ingested_date', current_date())
-
-# COMMAND ----------
-
-pitstops_final_df.write.mode('overwrite').parquet('/mnt/formulaone32/processed/pit_stops')
+pitstops_final_df.write.mode('overwrite').parquet('{processed_path}/pit_stops')

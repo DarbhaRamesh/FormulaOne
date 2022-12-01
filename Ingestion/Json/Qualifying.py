@@ -1,4 +1,8 @@
 # Databricks notebook source
+# MAGIC %run "../configs/config"
+
+# COMMAND ----------
+
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType
 
 # COMMAND ----------
@@ -17,20 +21,19 @@ qualifying_schema = StructType([
 
 # COMMAND ----------
 
-qualifying_df = spark.read.schema(qualifying_schema).option('multiline', True).json('/mnt/formulaone32/raw/qualifying')
+qualifying_df = spark.read.schema(qualifying_schema).option('multiline', True).json(f'{raw_path}/qualifying/qualifying_split*.json')
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_date
-
-# COMMAND ----------
-
-qualifying_final_df = qualifying_df.withColumnRenamed('qualifyId', 'qualify_id')\
+qualifying_renamed_df = qualifying_df.withColumnRenamed('qualifyId', 'qualify_id')\
 .withColumnRenamed('raceId', 'race_id')\
 .withColumnRenamed('driverId', 'driver_id')\
-.withColumnRenamed('constructorId', 'constructor_id')\
-.withColumn('ingested_date', current_date())
+.withColumnRenamed('constructorId', 'constructor_id')
 
 # COMMAND ----------
 
-qualifying_final_df.write.mode('overwrite').parquet('/mnt/formulaone32/processed/qualifying')
+qualifying_final_df =  add_metadata(qualifying_renamed_df)
+
+# COMMAND ----------
+
+qualifying_final_df.write.mode('overwrite').parquet('{processed_path}/qualifying')

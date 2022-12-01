@@ -7,6 +7,10 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../configs/config"
+
+# COMMAND ----------
+
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, FloatType
 
 # COMMAND ----------
@@ -34,11 +38,7 @@ results_schema = StructType([
 
 # COMMAND ----------
 
-results_df = spark.read.schema(results_schema).json('/mnt/formulaone32/raw/results.json')
-
-# COMMAND ----------
-
-from pyspark.sql.functions import current_date
+results_df = spark.read.schema(results_schema).json(f'{raw_path}/results.json')
 
 # COMMAND ----------
 
@@ -54,9 +54,12 @@ results_renamed_df = results_df.withColumnRenamed('constructorId', 'constructor_
 
 # COMMAND ----------
 
-results_final_df =  results_renamed_df.drop('statusId')\
-.withColumn('ingested_date', current_date())
+results_dropped_df =  results_renamed_df.drop('statusId')
 
 # COMMAND ----------
 
-results_final_df.write.mode('overwrite').partitionBy('race_id').parquet('/mnt/formulaone32/processed/results')
+results_final_df=add_metadata(results_dropped_df)
+
+# COMMAND ----------
+
+results_final_df.write.mode('overwrite').partitionBy('race_id').parquet('{processed_path}/results')

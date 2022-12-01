@@ -10,6 +10,10 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../configs/config"
+
+# COMMAND ----------
+
 from pyspark.sql.types import StructType,StructField, IntegerType, StringType, DateType
 
 # COMMAND ----------
@@ -27,7 +31,7 @@ races_schema = StructType([
 
 # COMMAND ----------
 
-races_df = spark.read.option('header', True).schema(races_schema).csv('/mnt/formulaone32/raw/races.csv')
+races_df = spark.read.option('header', True).schema(races_schema).csv(f'{raw_path}/races.csv')
 
 # COMMAND ----------
 
@@ -48,12 +52,8 @@ races_rename_df = races_selected_df.withColumnRenamed('raceId', 'race_id')\
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_date
+races_final_df = add_metadata(races_rename_df)
 
 # COMMAND ----------
 
-races_final_df = races_rename_df.withColumn('ingested_date', current_date())
-
-# COMMAND ----------
-
-races_final_df.write.mode('overwrite').parquet('/mnt/formulaone32/processed/races')
+races_final_df.write.mode('overwrite').parquet(f'{processed_path}/races')

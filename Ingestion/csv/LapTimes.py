@@ -6,6 +6,10 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../configs/config"
+
+# COMMAND ----------
+
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType
 
 # COMMAND ----------
@@ -21,18 +25,17 @@ lap_time_schema = StructType([
 
 # COMMAND ----------
 
-lap_time_df = spark.read.schema(lap_time_schema).csv('/mnt/formulaone32/raw/lap_times/lap_times_split_*.csv')
+lap_time_df = spark.read.schema(lap_time_schema).csv(f'{raw_path}/lap_times/lap_times_split_*.csv')
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_date
+lap_times_renamed_df = lap_time_df.withColumnRenamed('raceId', 'race_id')\
+.withColumnRenamed('driverId', 'driver_id')
 
 # COMMAND ----------
 
-lap_times_final_df = lap_time_df.withColumnRenamed('raceId', 'race_id')\
-.withColumnRenamed('driverId', 'driver_id')\
-.withColumn('ingested_date', current_date())
+lap_times_final_df = add_metadata(lap_times_renamed_df)
 
 # COMMAND ----------
 
-lap_times_final_df.write.mode('overwrite').parquet('/mnt/formulaone32/processed/lap_times')
+lap_times_final_df.write.mode('overwrite').parquet(f'{processed_path}/lap_times')

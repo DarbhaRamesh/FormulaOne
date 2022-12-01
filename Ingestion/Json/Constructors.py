@@ -8,6 +8,10 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../configs/config"
+
+# COMMAND ----------
+
 constructors_schema = '''
     constructorId SHORT,
     constructorRef STRING,
@@ -18,7 +22,7 @@ constructors_schema = '''
 
 # COMMAND ----------
 
-constructors_df = spark.read.schema(constructors_schema).json('/mnt/formulaone32/raw/constructors.json')
+constructors_df = spark.read.schema(constructors_schema).json(f'{raw_path}/constructors.json')
 
 # COMMAND ----------
 
@@ -31,12 +35,8 @@ constructors_rename_df = constructors_drop_df.withColumnRenamed('constructorId',
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_date
+constructors_final_df = add_metadata(constructors_rename_df)
 
 # COMMAND ----------
 
-constructors_final_df = constructors_rename_df.withColumn('ingested_date', current_date())
-
-# COMMAND ----------
-
-constructors_final_df.write.mode('overwrite').parquet('/mnt/formulaone32/processed/constructors')
+constructors_final_df.write.mode('overwrite').parquet('{processed_path}/constructors')
