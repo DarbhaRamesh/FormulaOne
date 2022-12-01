@@ -66,4 +66,8 @@ dbutils.fs.ls("/mnt/formulaone32/processed")
 
 # COMMAND ----------
 
+mount_adls('transformed')
 
+# COMMAND ----------
+
+dbutils.fs.ls("/mnt/formulaone32/transformed")
